@@ -61,7 +61,20 @@ def gpt_query(user_query: str = "", skip_save: bool = False) -> str:
 
     return assistant_message
 
+def main():
+    # 초기 응답 출력
+    assistant_message = gpt_query()
+    print(f"[assistant] {assistant_message}")
+
+    # 유저 입력을 받아서 전달하고, 그에 대한 응답을 출력
+    # 빈 문자열을 입력받거나, Ctrl-C 입력을 받으면 대화 루프를 끝냅니다.
+    try:
+        while line := input("[user] ").strip():
+            response = gpt_query(line)
+            print("[assistant] {}".format(response))
+    except (EOFError, KeyboardInterrupt):
+        print("terminated by user.")
+
 
 if __name__ == "__main__":
-    first_response = gpt_query()
-    print(first_response)
+    main()
