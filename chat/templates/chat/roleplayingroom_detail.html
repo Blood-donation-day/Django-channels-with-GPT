@@ -1,4 +1,6 @@
-{% extends "chat/base.html" %} {% block extra-css %}
+{% extends "chat/base.html" %}
+
+{% block extra-css %}
 <style>
   #chat-message-list {
     padding: 0;
@@ -25,15 +27,17 @@
     text-align: left;
   }
 </style>
-{% endblock %} {% block content %}
+{% endblock %}
+
+{% block content %}
 <div class="row">
   <div class="col-sm-12">
     <div class="card">
       <div class="card-header">
-        [ {{ roleplayingroom.get_language_display }}
-        {{ roleplayingroom.get_level_display }} ] {{ roleplayingroom.situation }} ({{ roleplayingroom.gpt_role }}와
-        {{ roleplayingroom.my_role }}의
-        대화)
+        [{{ roleplayingroom.get_language_display }}
+        {{ roleplayingroom.get_level_display }}]
+        {{ roleplayingroom.situation }}
+        ({{ roleplayingroom.gpt_role }}와 {{ roleplayingroom.my_role }}의 대화)
       </div>
       <div class="card-body">
         <ul id="chat-message-list"></ul>
@@ -53,9 +57,13 @@
   {# 🔥 HERE #}
   <a href="{% url 'role_playing_room_delete' roleplayingroom.pk %}" class="btn btn-danger">삭제</a>
 </div>
-{% endblock %} {% block script %} {{ roleplayingroom.pk|json_script:"room-pk" }}
+{% endblock %}
+
+{% block script %}
+{{ roleplayingroom.pk|json_script:"room-pk" }}
 
 <script>
+
   function addMessage(message, isMe) {
     const messageList = document.getElementById("chat-message-list");
     const messageElement = document.createElement("li");
@@ -67,22 +75,11 @@
 
   (function () {
     const room_pk = document.querySelector("#room-pk").textContent;
-    const ws = new WebSocket(
-      `ws://${window.location.host}/ws/chat/${room_pk}/`
-    );
+    const ws = new WebSocket(`ws://${window.location.host}/ws/chat/${room_pk}/`);
 
-    ws.onopen = function (e) {
-      console.log("장고 채널스 서버와 웹소켓 연결되었습니다.");
-    };
-    ws.onclose = function (e) {
-      console.log("장고 채널스 서버와 웹소켓 연결이 끊어졌습니다.");
-    };
-    ws.onerror = function (e) {
-      console.error(
-        "장고 채널스 서버와의 웹소켓 연결 중에 오류가 발생했습니다.",
-        e
-      );
-    };
+    ws.onopen = function (e) { console.log("장고 채널스 서버와 웹소켓 연결되었습니다."); };
+    ws.onclose = function (e) { console.log('장고 채널스 서버와 웹소켓 연결이 끊어졌습니다.'); };
+    ws.onerror = function (e) { console.error("장고 채널스 서버와의 웹소켓 연결 중에 오류가 발생했습니다.", e); };
     // 서버로부터 웹소켓 메시지를 받았을 때 호출되는 함수.
     ws.onmessage = function (e) {
       console.group("[onmessage]");
@@ -95,11 +92,13 @@
         const { message } = message_obj;
         console.log("assistant-message:", message);
         // 채팅 UI에 메시지를 추가하는 코드.
-        addMessage(message, false); // ⭐️ 추가됨
-      } else if (message_obj.type === "openai-error") {
+        addMessage(message, false);  // ⭐️ 추가됨
+      }
+      else if (message_obj.type === "openai-error") {
         const { message } = message_obj;
         alert(`Error: ${message}`);
-      } else {
+      }
+      else {
         console.error("알 수 없는 메시지 타입입니다.", message_obj);
       }
 
@@ -114,8 +113,8 @@
         // 서버로 웹소켓 메시지를 전송하는 코드.
         //  - 서버 단에서 "전달받은 문자열"을 JSON 디코딩하므로
         //  - 클라이언트 단에서 JSON 인코딩한 문자열을 웹소켓으로 전달
-        addMessage(message, true); // ⭐️ 추가
-        ws.send(JSON.stringify({ type: "user-message", message: message })); // ⭐️ type 추가
+        addMessage(message, true);  // 🔥 HERE
+        ws.send(JSON.stringify({ type: "user-message", message: message }));  // 🔥 HERE
         e.target.reset();
       }
     };
