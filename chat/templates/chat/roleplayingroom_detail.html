@@ -4,6 +4,7 @@
     padding: 0;
     list-style: none;
   }
+
   .chat-message .message {
     background-color: #3b3b3d;
     color: #e1e1e1;
@@ -17,6 +18,7 @@
   .chat-message.me {
     text-align: right;
   }
+
   .chat-message.me .message {
     background-color: #1f8cff;
     color: #fff;
@@ -28,9 +30,10 @@
   <div class="col-sm-12">
     <div class="card">
       <div class="card-header">
-        [{{ roleplayingroom.get_language_display }} {{
-        roleplayingroom.get_level_display }}] {{ roleplayingroom.situation }}
-        ({{ roleplayingroom.gpt_role }}와 {{ roleplayingroom.my_role }}의 대화)
+        [ {{ roleplayingroom.get_language_display }}
+        {{ roleplayingroom.get_level_display }} ] {{ roleplayingroom.situation }} ({{ roleplayingroom.gpt_role }}와
+        {{ roleplayingroom.my_role }}의
+        대화)
       </div>
       <div class="card-body">
         <ul id="chat-message-list"></ul>
@@ -38,12 +41,7 @@
       <div class="card-footer">
         <div class="d-flex gap-2">
           <form id="message-form" class="d-flex gap-1 flex-grow-1">
-            <input
-              type="text"
-              name="message"
-              placeholder="메시지를 입력하세요."
-              class="form-control flex-grow-1"
-            />
+            <input type="text" name="message" placeholder="메시지를 입력하세요." class="form-control flex-grow-1" />
           </form>
         </div>
       </div>
@@ -51,17 +49,9 @@
   </div>
 </div>
 <div class="my-3">
-  <a
-    href="{% url 'role_playing_room_edit' roleplayingroom.pk %}"
-    class="btn btn-primary"
-    >수정</a
-  >
+  <a href="{% url 'role_playing_room_edit' roleplayingroom.pk %}" class="btn btn-primary">수정</a>
   {# 🔥 HERE #}
-  <a
-    href="{% url 'role_playing_room_delete' roleplayingroom.pk %}"
-    class="btn btn-danger"
-    >삭제</a
-  >
+  <a href="{% url 'role_playing_room_delete' roleplayingroom.pk %}" class="btn btn-danger">삭제</a>
 </div>
 {% endblock %} {% block script %} {{ roleplayingroom.pk|json_script:"room-pk" }}
 
